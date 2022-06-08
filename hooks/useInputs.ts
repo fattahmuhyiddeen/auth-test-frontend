@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import useRegister from "./useRegister";
+import useLogin from "./useLogin";
 
 const useInputs = () => {
+
     const [isLogin, setIsLogin] = useState(true);
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState("");
@@ -10,7 +13,9 @@ const useInputs = () => {
     const [passwordError, setPasswordError] = useState("");
     const [repassword, setRepassword] = useState("");
     const [repasswordError, setRepasswordError] = useState("");
-  
+    const {action: register} = useRegister();
+    const {action: login} = useLogin();
+
     const inputs = [
       {
         label: "Name",
@@ -54,7 +59,7 @@ const useInputs = () => {
       },
     ].filter((i) => i.visible);
   
-    const onSubmit = () => {
+    const onSubmit = async() => {
       if (
         inputs
           .map((i) => {
@@ -97,8 +102,10 @@ const useInputs = () => {
           return;
         } else setRepasswordError("");
       }
-  
-      console.log("submitting");
+      const response = isLogin ? await login({ email, password}) : await register({name, email, password})
+      if (response?.status === 200) {
+        alert("Successfully " + (isLogin ? "logged in" : "registered"))
+      }
     };
   
     useEffect(() => inputs.forEach((i) => i.setError("")), [isLogin]);

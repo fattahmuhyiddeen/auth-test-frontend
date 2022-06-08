@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import useInputs from '../hooks/useInputs'
+import useInputs from "../hooks/useInputs";
 
 const Home: NextPage = () => {
- const h = useInputs();
+  const h = useInputs();
 
   return (
     <>
