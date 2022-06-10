@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import useRegister from "./useRegister";
 import useLogin from "./useLogin";
 
-const useInputs = (isLogin: boolean) => {
+const useInputs = (isLogin: boolean, setState: Function) => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [email, setEmail] = useState("");
@@ -110,12 +110,8 @@ const useInputs = (isLogin: boolean) => {
         return;
       } else setRepasswordError("");
     }
-    const response = isLogin
-      ? await login({ email, password })
-      : await register({ name, email, password });
-    if (response?.status === 200) {
-      alert("Successfully " + (isLogin ? "logged in" : "registered"));
-    }
+    if (isLogin) login({ email, password });
+    else register({ name, email, password }, () => setState("successRegister"));
   };
 
   useEffect(() => {

@@ -17,7 +17,7 @@ const Home: NextPage = () => {
     "login"
   );
   const isLogin = state === "login";
-  const h = useInputs(isLogin);
+  const h = useInputs(isLogin, setState);
   const requestLoading = loading || h.registerLoading || h.loginLoading;
 
   if (cookie.token) {
@@ -34,6 +34,22 @@ const Home: NextPage = () => {
         <Version front={pkg.version} back={data?.version} />
       </div>
     );
+  }
+
+  if(state === "successRegister"){
+    return (
+      <div className="relative mb-10 mt-5 md:mx-auto md:max-w-4xl px-4">
+      <div>Successfully register. Proceed to Login</div>
+      <button
+        className="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-4 my-6 rounded"
+        onClick={() => setState("login")}
+        type="button"
+      >
+        Login
+      </button>
+      <Version front={pkg.version} back={data?.version} />
+    </div>
+    )
   }
 
   return (

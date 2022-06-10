@@ -8,10 +8,9 @@ interface Body {
 
 export default function useRegister() {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const action = async (body: Body) => {
+  const action = async (body: Body, onSuccess: () => null) => {
     try {
       setLoading(true);
       const response = await fetch(
@@ -25,12 +24,10 @@ export default function useRegister() {
         }
       );
       const res = await response.json();
-      if (res.user) setSuccess(true);
+      if (res.user) onSuccess();
       else if (res.error) setError(res.error);
       else if (response.status < 200 || response.status >= 300)
         setError("Sorry, please try later");
-
-      return response;
     } catch (e) {
       setError(JSON.stringify(e));
     } finally {
@@ -41,7 +38,6 @@ export default function useRegister() {
   return {
     action,
     loading,
-    success,
     error,
     setError,
   };
