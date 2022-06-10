@@ -1,9 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import useInputs from "../hooks/useInputs";
+import useCheckAPI from "../hooks/useCheckAPI";
+import Loading from "../components/Loading";
+import Input from "../components/Input";
+import pkg from "../package.json";
+import Version from "../components/Version";
 
 const Home: NextPage = () => {
   const h = useInputs();
+  const { loading, error, data } = useCheckAPI();
 
   return (
     <>
@@ -15,45 +21,37 @@ const Home: NextPage = () => {
       <div className="relative mb-10 mt-5 md:mx-auto md:max-w-4xl px-4">
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
           {h.inputs.map((i) => (
-            <div className="mb-4" key={i.label}>
-              <label className="block text-grey-darker text-sm font-bold mb-2">
-                {i.label}
-              </label>
-              <input
-                className={`shadow appearance-none border ${
-                  !!i.error && "border-red-600"
-                } rounded w-full py-2 px-3 text-grey-darker`}
-                type={i.type}
-                value={i.value}
-                onChange={(e) => i.onChange(e.target.value)}
-              />
-              {!!i.error && (
-                <p className="text-red-600 text-xs italic">{i.error}</p>
-              )}
-            </div>
+            <Input key={i.label} {...i} />
           ))}
           <button
             className="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 my-6 rounded"
             onClick={h.onSubmit}
             type="button"
           >
+            {loading && <Loading />}
             {h.isLogin ? "Login" : "Register"}
           </button>
-          <div className="flex items-center justify-between">
-            <div></div>
+          {loading && (
+            <div className="my-8">
+              Checking API status. This may take sometimes since back end is
+              deployed on Heroku Free Edition
+            </div>
+          )}
+          <div className="flex items-center justify-end">
             <div>
               <span className="pr-1">
-                {h.isLogin ? "First time?" : "Already have account?"}{" "}
+                {h.isLogin ? "First time?" : "Already have account?"}
               </span>
               <a
                 className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
                 href="#"
-                onClick={() => h.setIsLogin((v) => !v)}
+                onClick={() => !loading && !error && h.setIsLogin((v) => !v)}
               >
                 {(h.isLogin ? "Register" : "Login") + " now"}
               </a>
             </div>
           </div>
+          <Version front={pkg.version} back={data?.version}/>
         </div>
       </div>
     </>
