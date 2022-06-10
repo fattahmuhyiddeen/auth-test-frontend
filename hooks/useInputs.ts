@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import useRegister from "./useRegister";
 import useLogin from "./useLogin";
 
-const useInputs = () => {
-  const [isLogin, setIsLogin] = useState(true);
+const useInputs = (isLogin: boolean) => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [email, setEmail] = useState("");
@@ -114,8 +113,6 @@ const useInputs = () => {
   return {
     inputs,
     onSubmit,
-    isLogin,
-    setIsLogin,
     name,
     setName,
     nameError,

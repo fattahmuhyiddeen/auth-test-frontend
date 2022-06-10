@@ -6,10 +6,13 @@ import Loading from "../components/Loading";
 import Input from "../components/Input";
 import pkg from "../package.json";
 import Version from "../components/Version";
+import { useState } from "react";
 
 const Home: NextPage = () => {
-  const h = useInputs();
   const { loading, error, data } = useCheckAPI();
+  const [state, setState] = useState<"login" | "register" | "successRegister" | "successLogin">("login");
+  const isLogin = state === "login"
+  const h = useInputs(isLogin);
 
   return (
     <>
@@ -29,7 +32,7 @@ const Home: NextPage = () => {
             type="button"
           >
             {loading && <Loading />}
-            {h.isLogin ? "Login" : "Register"}
+            {isLogin ? "Login" : "Register"}
           </button>
           {loading && (
             <div className="my-8">
@@ -40,14 +43,14 @@ const Home: NextPage = () => {
           <div className="flex items-center justify-end">
             <div>
               <span className="pr-1">
-                {h.isLogin ? "First time?" : "Already have account?"}
+                {isLogin ? "First time?" : "Already have account?"}
               </span>
               <a
                 className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
                 href="#"
-                onClick={() => !loading && !error && h.setIsLogin((v) => !v)}
+                onClick={() => !loading && !error && setState(isLogin ? "register" :"login")}
               >
-                {(h.isLogin ? "Register" : "Login") + " now"}
+                {(isLogin ? "Register" : "Login") + " now"}
               </a>
             </div>
           </div>
