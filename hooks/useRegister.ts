@@ -1,15 +1,17 @@
 import { useState } from "react";
 
+interface Body {
+  name: string;
+  email: string;
+  password: string;
+}
+
 export default function useRegister() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const action = async (body: {
-    name: string;
-    email: string;
-    password: string;
-  }) => {
+  const action = async (body: Body) => {
     try {
       setLoading(true);
       const response = await fetch(

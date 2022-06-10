@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
+interface Body {
+  email: string;
+  password: string;
+}
+
 export default function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const setCookie = useCookies(["token"])[1];
 
-  const action = async (body: { email: string; password: string }) => {
+  const action = async (body: Body) => {
     try {
       setLoading(true);
       setError("");

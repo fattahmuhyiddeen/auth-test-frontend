@@ -31,6 +31,7 @@ const Home: NextPage = () => {
         >
           Logout
         </button>
+        <Version front={pkg.version} back={data?.version} />
       </div>
     );
   }
