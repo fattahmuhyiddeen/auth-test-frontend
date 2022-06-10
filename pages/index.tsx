@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { NextPage } from "next";
+import { useCookies } from "react-cookie";
 import Head from "next/head";
 import useInputs from "../hooks/useInputs";
 import useCheckAPI from "../hooks/useCheckAPI";
@@ -6,16 +8,32 @@ import Loading from "../components/Loading";
 import Input from "../components/Input";
 import pkg from "../package.json";
 import Version from "../components/Version";
-import { useState } from "react";
 
 const Home: NextPage = () => {
   const { loading, error, data } = useCheckAPI();
-  const [state, setState] = useState<
-    "login" | "register" | "successRegister" | "successLogin"
-  >("login");
+  const [cookie, _, removeCookie] = useCookies(["token"]);
+
+  const [state, setState] = useState<"login" | "register" | "successRegister">(
+    "login"
+  );
   const isLogin = state === "login";
   const h = useInputs(isLogin);
   const requestLoading = loading || h.registerLoading || h.loginLoading;
+
+  if (cookie.token) {
+    return (
+      <div className="relative mb-10 mt-5 md:mx-auto md:max-w-4xl px-4">
+        <div>Successfully logged in</div>
+        <button
+          className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 my-6 rounded"
+          onClick={() => removeCookie("token")}
+          type="button"
+        >
+          Logout
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -58,7 +76,9 @@ const Home: NextPage = () => {
                 className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
                 href="#"
                 onClick={() =>
-                  !requestLoading && !error && setState(isLogin ? "register" : "login")
+                  !requestLoading &&
+                  !error &&
+                  setState(isLogin ? "register" : "login")
                 }
               >
                 {(isLogin ? "Register" : "Login") + " now"}

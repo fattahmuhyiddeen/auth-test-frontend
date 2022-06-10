@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
-export default function useRegister() {
+
+export default function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -23,8 +24,9 @@ export default function useRegister() {
       const res = (await response.json()) as { token?: string; error?: string };
       if (res.token) setCookie("token", res.token);
       else if (res.error) setError(res.error);
-      else if(response.status === 401) setError("Wrong email or password");
-      else if(response.status < 200 || response.status >= 300) setError("Sorry, please try later");
+      else if (response.status === 401) setError("Wrong email or password");
+      else if (response.status < 200 || response.status >= 300)
+        setError("Sorry, please try later");
       return response;
     } catch (e) {
       setError(JSON.stringify(e));
@@ -37,6 +39,6 @@ export default function useRegister() {
     action,
     loading,
     setError,
-        error,
+    error,
   };
 }

@@ -25,8 +25,9 @@ export default function useRegister() {
       const res = await response.json();
       if (res.user) setSuccess(true);
       else if (res.error) setError(res.error);
-      else if(response.status < 200 || response.status >= 300) setError("Sorry, please try later");
-      
+      else if (response.status < 200 || response.status >= 300)
+        setError("Sorry, please try later");
+
       return response;
     } catch (e) {
       setError(JSON.stringify(e));
