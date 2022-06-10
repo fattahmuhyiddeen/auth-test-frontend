@@ -1,13 +1,15 @@
 import { useState } from "react";
-
+import { useCookies } from "react-cookie";
 export default function useRegister() {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
+
+  const setCookie = useCookies(["token"])[1];
 
   const action = async (body: { email: string; password: string }) => {
     try {
       setLoading(true);
+      setError("");
       const response = await fetch(
         "https://xla-interview.herokuapp.com/login",
         {
@@ -18,11 +20,14 @@ export default function useRegister() {
           body: JSON.stringify(body),
         }
       );
-      response.json();
-      setSuccess(true);
+      const res = (await response.json()) as { token?: string; error?: string };
+      if (res.token) setCookie("token", res.token);
+      else if (res.error) setError(res.error);
+      else if(response.status === 401) setError("Wrong email or password");
+      else if(response.status < 200 || response.status >= 300) setError("Sorry, please try later");
       return response;
     } catch (e) {
-      setError(true);
+      setError(JSON.stringify(e));
     } finally {
       setLoading(false);
     }
@@ -31,7 +36,7 @@ export default function useRegister() {
   return {
     action,
     loading,
-    success,
-    error,
+    setError,
+        error,
   };
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 export default function useRegister() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
 
   const action = async (body: {
     name: string;
@@ -22,11 +22,14 @@ export default function useRegister() {
           body: JSON.stringify(body),
         }
       );
-      response.json();
-      setSuccess(true);
+      const res = await response.json();
+      if (res.user) setSuccess(true);
+      else if (res.error) setError(res.error);
+      else if(response.status < 200 || response.status >= 300) setError("Sorry, please try later");
+      
       return response;
     } catch (e) {
-      setError(true);
+      setError(JSON.stringify(e));
     } finally {
       setLoading(false);
     }
@@ -37,5 +40,6 @@ export default function useRegister() {
     loading,
     success,
     error,
+    setError,
   };
 }

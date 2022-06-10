@@ -11,8 +11,8 @@ const useInputs = (isLogin: boolean) => {
   const [passwordError, setPasswordError] = useState("");
   const [repassword, setRepassword] = useState("");
   const [repasswordError, setRepasswordError] = useState("");
-  const { action: register } = useRegister();
-  const { action: login } = useLogin();
+  const { action: register, error: registerError, setError: setRegisterError, loading: registerLoading } = useRegister();
+  const { action: login, error: loginError, setError: setLoginError, loading: loginLoading } = useLogin();
 
   const inputs = [
     {
@@ -108,7 +108,11 @@ const useInputs = (isLogin: boolean) => {
     }
   };
 
-  useEffect(() => inputs.forEach((i) => i.setError("")), [isLogin]);
+  useEffect(() => {
+    inputs.forEach((i) => i.setError(""));
+    setLoginError("")
+    setRegisterError("")
+  }, [isLogin]);
 
   return {
     inputs,
@@ -129,6 +133,10 @@ const useInputs = (isLogin: boolean) => {
     setRepassword,
     repasswordError,
     setRepasswordError,
+    registerError,
+    loginError,
+    registerLoading,
+    loginLoading,
   };
 };
 
